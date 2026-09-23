@@ -1,0 +1,67 @@
+import { Timestamp } from 'firebase/firestore';
+
+export const DEMO_PRODUCTS = [
+  {
+    id: 'prod_1',
+    name: 'Portable Mini Projector',
+    brand: 'VisionPlus',
+    category: 'Electronics',
+    description: '1080p supported mini projector for home theater.',
+    sourceUrl: 'https://example.com/projector',
+    imageUrl: 'https://images.unsplash.com/photo-1535016120720-40c646bebbbc?q=80&w=500&auto=format&fit=crop',
+    price: 89.99,
+    currency: 'USD',
+    trendScore: 87,
+    opportunityScore: 92,
+    competitionScore: 45,
+    demandScore: 88,
+    status: 'ACTIVE',
+    momentum: 12.5,
+    createdAt: Timestamp.now(),
+  },
+  {
+    id: 'prod_2',
+    name: 'Ergonomic Standing Desk',
+    brand: 'FlexiWork',
+    category: 'Office',
+    description: 'Electric height adjustable desk with memory presets.',
+    sourceUrl: 'https://example.com/desk',
+    imageUrl: 'https://images.unsplash.com/photo-1595515106969-1ce29566ff1c?q=80&w=500&auto=format&fit=crop',
+    price: 299.00,
+    currency: 'USD',
+    trendScore: 78,
+    opportunityScore: 85,
+    competitionScore: 60,
+    demandScore: 82,
+    status: 'PROMISING',
+    momentum: 8.2,
+    createdAt: Timestamp.now(),
+  },
+  {
+    id: 'prod_3',
+    name: 'Smart Kitchen Composter',
+    brand: 'EcoBin',
+    category: 'Kitchen',
+    description: 'Turn food waste into nutrient-rich compost in hours.',
+    sourceUrl: 'https://example.com/composter',
+    imageUrl: 'https://images.unsplash.com/photo-1591193512964-42cb233d6110?q=80&w=500&auto=format&fit=crop',
+    price: 149.99,
+    currency: 'USD',
+    trendScore: 92,
+    opportunityScore: 95,
+    competitionScore: 30,
+    demandScore: 94,
+    status: 'HIGH PERFORMER',
+    momentum: 24.1,
+    createdAt: Timestamp.now(),
+  }
+];
+
+export const DEMO_METRICS = {
+  revenue: 1240.50,
+  clicks: 4820,
+  engagement: 12400,
+  revenueChange: 24,
+  clicksChange: 18,
+  engagementChange: 31
+};
