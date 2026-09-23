@@ -1,0 +1,191 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile and global settings",
+      "type": "object",
+      "properties": {
+        "email": { "type": "string", "format": "email" },
+        "market": { "type": "string", "enum": ["US", "UK", "CA"] },
+        "currency": { "type": "string", "maxLength": 3 },
+        "timezone": { "type": "string" },
+        "automationEnabled": { "type": "boolean" },
+        "onboardingComplete": { "type": "boolean" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["email", "market", "currency", "createdAt"]
+    },
+    "SocialAccount": {
+      "title": "Social Account",
+      "description": "OAuth tokens and account status for social platforms",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "platform": { "type": "string", "enum": ["facebook", "instagram", "youtube"] },
+        "accountName": { "type": "string" },
+        "platformId": { "type": "string" },
+        "accessToken": { "type": "string" },
+        "refreshToken": { "type": "string" },
+        "expiresAt": { "type": "string", "format": "date-time" },
+        "status": { "type": "string", "enum": ["connected", "disconnected", "error"] },
+        "lastSync": { "type": "string", "format": "date-time" },
+        "error": { "type": "string" }
+      },
+      "required": ["userId", "platform", "status"]
+    },
+    "Product": {
+      "title": "Product",
+      "description": "Product data with scores and trend status",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "maxLength": 200 },
+        "brand": { "type": "string" },
+        "category": { "type": "string" },
+        "description": { "type": "string" },
+        "sourceUrl": { "type": "string" },
+        "imageUrl": { "type": "string" },
+        "price": { "type": "number" },
+        "currency": { "type": "string" },
+        "trendScore": { "type": "number" },
+        "opportunityScore": { "type": "number" },
+        "competitionScore": { "type": "number" },
+        "demandScore": { "type": "number" },
+        "status": { "type": "string", "enum": ["DISCOVERED", "ANALYZING", "WATCHLIST", "PROMISING", "ACTIVE", "HIGH PERFORMER", "DECLINING", "ARCHIVED"] },
+        "momentum": { "type": "number" },
+        "lastUpdated": { "type": "string", "format": "date-time" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "trendScore", "status", "createdAt"]
+    },
+    "ProductTrend": {
+      "title": "Product Trend",
+      "description": "Historical trend snapshots for charting",
+      "type": "object",
+      "properties": {
+        "productId": { "type": "string" },
+        "date": { "type": "string", "format": "date-time" },
+        "trendScore": { "type": "number" },
+        "searchInterest": { "type": "number" },
+        "socialMentions": { "type": "number" },
+        "price": { "type": "number" }
+      },
+      "required": ["productId", "date", "trendScore"]
+    },
+    "AffiliateLink": {
+      "title": "Affiliate Link",
+      "description": "Affiliate links associated with products",
+      "type": "object",
+      "properties": {
+        "productId": { "type": "string" },
+        "network": { "type": "string" },
+        "originalUrl": { "type": "string" },
+        "affiliateUrl": { "type": "string" },
+        "commissionRate": { "type": "number" },
+        "status": { "type": "string", "enum": ["active", "inactive"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["productId", "network", "affiliateUrl", "status"]
+    },
+    "Content": {
+      "title": "Content",
+      "description": "AI-generated content units",
+      "type": "object",
+      "properties": {
+        "productId": { "type": "string" },
+        "platform": { "type": "string", "enum": ["facebook", "instagram", "youtube"] },
+        "contentType": { "type": "string" },
+        "title": { "type": "string" },
+        "caption": { "type": "string" },
+        "script": { "type": "string" },
+        "hashtags": { "type": "array" },
+        "imageUrl": { "type": "string" },
+        "angle": { "type": "string" },
+        "status": { "type": "string", "enum": ["draft", "generated", "approved", "scheduled", "published", "failed"] },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["productId", "platform", "status", "createdAt"]
+    },
+    "ScheduledPost": {
+      "title": "Scheduled Post",
+      "description": "Posts queued for automatic publishing",
+      "type": "object",
+      "properties": {
+        "contentId": { "type": "string" },
+        "userId": { "type": "string" },
+        "platform": { "type": "string" },
+        "scheduledAt": { "type": "string", "format": "date-time" },
+        "status": { "type": "string", "enum": ["pending", "publishing", "published", "failed"] },
+        "error": { "type": "string" }
+      },
+      "required": ["contentId", "userId", "scheduledAt", "status"]
+    },
+    "Click": {
+      "title": "Click",
+      "description": "Tracking events for affiliate links",
+      "type": "object",
+      "properties": {
+        "productId": { "type": "string" },
+        "contentId": { "type": "string" },
+        "platform": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" },
+        "country": { "type": "string" },
+        "device": { "type": "string" }
+      },
+      "required": ["productId", "timestamp"]
+    },
+    "DailyReport": {
+      "title": "Daily Report",
+      "description": "AI-generated daily intelligence reports",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "date": { "type": "string" },
+        "summary": { "type": "string" },
+        "topProducts": { "type": "array" },
+        "totalRevenue": { "type": "number" },
+        "totalClicks": { "type": "number" },
+        "recommendations": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "date", "createdAt"]
+    }
+  },
+  "firestore": {
+    "users": {
+      "schema": "User",
+      "description": "Global user profiles"
+    },
+    "social_accounts": {
+      "schema": "SocialAccount",
+      "description": "OAuth tokens for social platforms"
+    },
+    "products": {
+      "schema": "Product",
+      "description": "Monitored products"
+    },
+    "product_trends": {
+      "schema": "ProductTrend",
+      "description": "Trend history"
+    },
+    "affiliate_links": {
+      "schema": "AffiliateLink",
+      "description": "Affiliate links for products"
+    },
+    "content": {
+      "schema": "Content",
+      "description": "Generated content items"
+    },
+    "scheduled_posts": {
+      "schema": "ScheduledPost",
+      "description": "Publishing queue"
+    },
+    "clicks": {
+      "schema": "Click",
+      "description": "Click tracking events"
+    },
+    "daily_reports": {
+      "schema": "DailyReport",
+      "description": "Daily AI reports"
+    }
+  }
+}

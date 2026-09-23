@@ -1,0 +1,112 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 1. Global Safety Net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // 2. Global Helpers
+    function isSignedIn() {
+      return request.auth != null;
+    }
+    function isVerified() {
+      return isSignedIn() && request.auth.token.email_verified == true;
+    }
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+    function isAdmin() {
+      return isVerified() && request.auth.token.email == 'it.rimon@gmail.com';
+    }
+    function incoming() {
+      return request.resource.data;
+    }
+    function existing() {
+      return resource.data;
+    }
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // 3. Validation Helpers
+    function isValidUser(data) {
+      return data.email is string && data.email.size() <= 256 &&
+             data.market in ['US', 'UK', 'CA'] &&
+             data.currency is string && data.currency.size() == 3 &&
+             data.createdAt == request.time;
+    }
+
+    function isValidProduct(data) {
+      return data.name is string && data.name.size() <= 200 &&
+             data.trendScore is number &&
+             data.status in ['DISCOVERED', 'ANALYZING', 'WATCHLIST', 'PROMISING', 'ACTIVE', 'HIGH PERFORMER', 'DECLINING', 'ARCHIVED'] &&
+             data.createdAt == request.time;
+    }
+
+    // 4. Match Blocks
+    match /users/{userId} {
+      allow read: if isOwner(userId) || isAdmin();
+      allow create: if isOwner(userId) && isValidUser(incoming());
+      allow update: if isOwner(userId) && isValidUser(incoming()) && 
+                    incoming().diff(existing()).affectedKeys().hasOnly(['market', 'currency', 'timezone', 'automationEnabled', 'onboardingComplete']);
+    }
+
+    match /social_accounts/{accountId} {
+      allow read: if isOwner(existing().userId) || isAdmin();
+      allow create: if isOwner(incoming().userId);
+      allow update: if isOwner(existing().userId) && 
+                    incoming().diff(existing()).affectedKeys().hasOnly(['accessToken', 'refreshToken', 'expiresAt', 'status', 'lastSync', 'error']);
+      allow delete: if isOwner(existing().userId);
+    }
+
+    match /products/{productId} {
+      allow read: if isSignedIn();
+      allow create: if isVerified() && isValidProduct(incoming());
+      allow update: if isVerified() && isValidProduct(incoming()) && 
+                    incoming().diff(existing()).affectedKeys().hasOnly(['name', 'brand', 'category', 'description', 'price', 'trendScore', 'opportunityScore', 'competitionScore', 'demandScore', 'status', 'momentum', 'lastUpdated']);
+      allow delete: if isAdmin();
+    }
+
+    match /product_trends/{snapshotId} {
+      allow read: if isSignedIn();
+      allow create: if isVerified();
+      // Trends are immutable snapshots
+      allow update, delete: if false;
+    }
+
+    match /affiliate_links/{linkId} {
+      allow read: if isSignedIn();
+      allow create: if isVerified();
+      allow update: if isVerified() && incoming().diff(existing()).affectedKeys().hasOnly(['affiliateUrl', 'commissionRate', 'status']);
+      allow delete: if isVerified();
+    }
+
+    match /content/{contentId} {
+      allow read: if isSignedIn();
+      allow create: if isVerified();
+      allow update: if isVerified() && incoming().diff(existing()).affectedKeys().hasOnly(['title', 'caption', 'script', 'hashtags', 'imageUrl', 'status']);
+      allow delete: if isVerified();
+    }
+
+    match /scheduled_posts/{postId} {
+      allow read: if isOwner(existing().userId) || isAdmin();
+      allow create: if isOwner(incoming().userId);
+      allow update: if isOwner(existing().userId) && incoming().diff(existing()).affectedKeys().hasOnly(['scheduledAt', 'status', 'error']);
+      allow delete: if isOwner(existing().userId);
+    }
+
+    match /clicks/{clickId} {
+      allow read: if isVerified(); // Only authenticated users can see analytics
+      allow create: if true; // Public can trigger click logging
+      allow update, delete: if false;
+    }
+
+    match /daily_reports/{reportId} {
+      allow read: if isOwner(existing().userId) || isAdmin();
+      allow create: if isAdmin(); // Only system/admin creates reports
+      allow update: if false;
+      allow delete: if isAdmin();
+    }
+  }
+}

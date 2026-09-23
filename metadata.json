@@ -1,0 +1,6 @@
+{
+  "name": "TrendAffiliate AI",
+  "description": "AI-powered affiliate marketing automation platform for discovering trending products and generating marketing content.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
