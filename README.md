@@ -2,7 +2,7 @@
 
 ## 1. Project Overview
 
-Build a modern full-stack web application called **TrendAffiliate AI**.
+Built a modern full-stack web application called **TrendAffiliate AI**.
 
 The application is an AI-powered affiliate marketing automation platform focused primarily on the **United States market**.
 
